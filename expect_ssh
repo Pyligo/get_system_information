@@ -1,0 +1,24 @@
+#!/usr/bin/expect  
+
+set timeout 30
+
+spawn ssh -l root [lrange $argv 0 0]
+
+expect {
+"yes/no" {send "yes\r";exp_continue}
+"password:" {send "Pass1234\r"}
+}
+send "Pass1234\r"
+expect "*$ "
+send -- "scp ladmin@10.7.0.117:/usr/mabo/get_info.sh /usr/mabo/"
+expect "*?assword:*"
+send -- "Pass1234\r"
+expect "*$ " 
+send -- "bash get_info.sh [lrange $argv 0 0]\r"
+expect "*$ " 
+send -- "scp /usr/mabo/info_*.txt ladmin@10.7.0.117:/usr/mabo\r"
+expect "*?assword:*"
+send -- "Pass1234\r"
+expect "*$ " 
+send -- "exit\r"
+expect eof
